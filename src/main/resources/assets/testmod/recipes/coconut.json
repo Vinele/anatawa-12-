@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AA ",
+    " A ",
+    "  C"
+  ],
+  "key": {
+    "A": {
+      "item": "testmod:key"
+    },
+    "C": {
+      "item": "minecraft:diamond",
+      "data": 32767
+    }
+  },
+  "result": {
+    "item": "testmod:coconut",
+    "count": 5
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "display": {
+    "icon": {
+      "item": "testmod:key"
+    },
+    "title": {
+      "translate": "МММММ ВОНЯЕТ"
+    },
+    "description": {
+      "translate": "ASSSSSSSSS"
+    },
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "testmod:craft/hehe_achievement",
+  "rewards": {
+    "experience": 5000000
+  },
+  "criteria": {
+    "crafting_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:rotten_flesh"
+          }
+        ]
+      }
+    }
+  }
+}

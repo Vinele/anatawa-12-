@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "testmod:coconut"
+    },
+    "title": {
+      "translate": "ДЕЛАЙ ВЕРСТАКИ СУКА"
+    },
+    "description": {
+      "translate": "ВЕРСТАКИИИИИИИИИИИИИИИИИИИИИИИ"
+    },
+    "background": "testmod:textures/gui/advancements/backgrounds/ava.png",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "crafting_table": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:crafting_table"
+          }
+        ]
+      }
+    }
+  }
+}

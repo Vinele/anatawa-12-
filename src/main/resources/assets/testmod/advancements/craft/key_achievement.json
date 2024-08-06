@@ -1,0 +1,24 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:wool",
+      "data": 6
+    },
+    "title": {
+      "translate": "БИМ БАМ БУМ"
+    },
+    "description": {
+      "translate": "хуху"
+    },
+    "frame": "goal"
+  },
+  "parent": "testmod:craft/root",
+  "criteria": {
+    "recipe_unlocked": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "testmod:key"
+      }
+    }
+  }
+}

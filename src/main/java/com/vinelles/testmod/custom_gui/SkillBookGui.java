@@ -12,7 +12,7 @@ import java.util.List;
 
 public class SkillBookGui extends GuiScreen {
 
-    private final ResourceLocation BOOK_TEXTURE = new ResourceLocation("minecraft", "textures/gui/book.png");
+    private final ResourceLocation BOOK_TEXTURE = new ResourceLocation("testmod", "textures/gui/spell_book.png");
     private final int BOOK_WIDTH = 180;
     private final int BOOK_HEIGHT = 180;
     private final int SKILLS_PER_PAGE = 6; // Увеличим количество навыков на странице до 6
@@ -58,16 +58,24 @@ public class SkillBookGui extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
+
+        // Привязываем текстуру книги и рисуем её
         mc.getTextureManager().bindTexture(BOOK_TEXTURE);
+
+        // Получаем центральную позицию
         int centerX = (this.width - BOOK_WIDTH) / 2;
         int centerY = (this.height - BOOK_HEIGHT) / 2;
-        drawTexturedModalRect(centerX, centerY, 0, 0, BOOK_WIDTH, BOOK_HEIGHT);
 
+        // Рисуем текстуру книги с корректными размерами (растягиваем текстуру 180x180 до размеров окна книги)
+        drawScaledCustomSizeModalRect(centerX, centerY, 0, 0, 180, 180, BOOK_WIDTH, BOOK_HEIGHT, 180, 180);
+
+        // Отображаем все остальное
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        int skillY = centerY + 20;
-        int hoveredSkillIndex = -1;
+        int skillY = centerY + 20;  // начальная позиция Y для навыков
+        int hoveredSkillIndex = -1; // индекс выделенного навыка (если на него наведен курсор)
 
+        // Проверяем наведение на навыки для выделения
         for (int i = 0; i < SKILLS_PER_PAGE; i++) {
             int skillIndex = currentPage * SKILLS_PER_PAGE + i;
             if (skillIndex < skills.size()) {
@@ -80,34 +88,42 @@ public class SkillBookGui extends GuiScreen {
                     hoveredSkillIndex = i;
                 }
 
-                skillY += SKILL_SPACING;
+                skillY += SKILL_SPACING;  // увеличиваем Y координату для следующего навыка
             }
         }
 
-        skillY = centerY + 20;
+        skillY = centerY + 20;  // сбрасываем Y координату для отрисовки иконок и текста навыков
         for (int i = 0; i < SKILLS_PER_PAGE; i++) {
             int skillIndex = currentPage * SKILLS_PER_PAGE + i;
             if (skillIndex < skills.size()) {
                 Skill skill = skills.get(skillIndex);
+
+                // Привязываем иконку навыка
                 mc.getTextureManager().bindTexture(skill.getIcon());
 
+                // Устанавливаем цвет для отрисовки
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
+                // Рисуем иконку навыка
                 drawScaledCustomSizeModalRect(centerX + ICON_OFFSET_X, skillY + 5, 0, 0, 16, 16, 16, 16, 16, 16);
 
+                // Отрисовка имени навыка
                 drawString(mc.fontRenderer, skill.getName(), centerX + TEXT_OFFSET_X, skillY + 5, 0x808080);
 
-                skillY += SKILL_SPACING;
+                skillY += SKILL_SPACING;  // увеличиваем Y координату для следующего навыка
             }
         }
 
+        // Отображаем всплывающую подсказку, если курсор наведен на навык
         if (hoveredSkillIndex != -1) {
             int skillIndex = currentPage * SKILLS_PER_PAGE + hoveredSkillIndex;
             if (skillIndex < skills.size()) {
                 Skill skill = skills.get(skillIndex);
-                drawHoveringText(skill.getTooltip(), mouseX, mouseY);
+                drawHoveringText(skill.getTooltip(), mouseX, mouseY);  // отображаем подсказку
             }
         }
     }
+
 
     @Override
     protected void actionPerformed(GuiButton button) {

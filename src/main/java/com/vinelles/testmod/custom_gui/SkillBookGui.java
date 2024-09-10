@@ -13,6 +13,7 @@ import java.util.List;
 public class SkillBookGui extends GuiScreen {
 
     private final ResourceLocation BOOK_TEXTURE = new ResourceLocation("testmod", "textures/gui/spell_book.png");
+    private final ResourceLocation BUTTONS_TEXTURE = new ResourceLocation("testmod", "textures/gui/buttons_book.png");
     private final int BOOK_WIDTH = 180;
     private final int BOOK_HEIGHT = 180;
     private final int SKILLS_PER_PAGE = 6; // Увеличим количество навыков на странице до 6
@@ -59,7 +60,7 @@ public class SkillBookGui extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
 
-        // Привязываем текстуру книги и рисуем её
+        // Привязываем текстуру книги перед её отрисовкой
         mc.getTextureManager().bindTexture(BOOK_TEXTURE);
 
         // Получаем центральную позицию
@@ -159,30 +160,42 @@ public class SkillBookGui extends GuiScreen {
         public PageButton(int buttonId, int x, int y, boolean isLeft) {
             super(buttonId, x, y, 20, 20, "");
             this.isLeft = isLeft;
+
+            // Устанавливаем смещение сразу при создании кнопки
+            int shiftRight = this.isLeft ? 90 : 20;
+            this.x += shiftRight; // Смещаем область активации кнопки вправо
+            this.y -= 8; // Смещаем область активации кнопки вверх
         }
 
         @Override
         public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
-                mc.getTextureManager().bindTexture(BOOK_TEXTURE);
+                mc.getTextureManager().bindTexture(BUTTONS_TEXTURE);
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
                 boolean isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 
                 int textureX, textureY;
 
                 if (this.isLeft) {
-                    textureX = isHovered ? 26 : 3;
-                    textureY = 207;
+                    textureX = isHovered ? 13 : 0;  // Координаты в текстуре для кнопки назад
+                    textureY = 13;                  // Координаты в текстуре по оси Y
                 } else {
-                    textureX = isHovered ? 26 : 3;
-                    textureY = 194;
+                    textureX = isHovered ? 13 : 0;  // Координаты в текстуре для кнопки вперед
+                    textureY = 25;                  // Координаты в текстуре по оси Y
                 }
 
-                int width = 18;
-                int height = 10;
+                int width = 12;  // Ширина вырезки на текстуре
+                int height = 12; // Высота вырезки на текстуре
+                int buttonSizeReduce = 10; // уменьшение отображаемой кнопки
 
-                drawTexturedModalRect(this.x, this.y, textureX, textureY, width, height);
+                // Метод для отрисовки вырезанной области текстуры с учётом её полного размера (56x25)
+                drawScaledCustomSizeModalRect(this.x, this.y, textureX, textureY, width, height,
+                        this.width - buttonSizeReduce, this.height - buttonSizeReduce,
+                        56, 25); // общий размер файла текстуры
             }
         }
     }
+
+
 }

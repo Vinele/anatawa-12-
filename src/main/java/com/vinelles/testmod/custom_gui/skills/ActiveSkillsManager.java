@@ -11,6 +11,11 @@ public class ActiveSkillsManager {
         return activeSkills;
     }
 
+    // Добавляем метод для проверки, активен ли скилл
+    public static boolean hasSkill(Skill skill) {
+        return activeSkills.contains(skill);
+    }
+
     public static void addSkill(Skill skill) {
         if (!activeSkills.contains(skill)) {
             activeSkills.add(skill);

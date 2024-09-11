@@ -22,8 +22,8 @@ public class SkillBookGui extends GuiScreen {
     // Новые параметры для сдвига
     private final int ICON_OFFSET_X = 35;
     private final int TEXT_OFFSET_X = 55;
-    private final int BUTTON_PLUS_OFFSET_X = 115;
-    private final int BUTTON_MINUS_OFFSET_X = 135;
+    private final int BUTTON_PLUS_OFFSET_X = 127;
+    private final int BUTTON_MINUS_OFFSET_X = 144;
 
     private List<Skill> skills;
     private int currentPage = 0;
@@ -37,8 +37,8 @@ public class SkillBookGui extends GuiScreen {
         int centerX = (this.width - BOOK_WIDTH) / 2;
         int centerY = (this.height - BOOK_HEIGHT) / 2;
 
-        int buttonWidth = 15;
-        int buttonHeight = 15;
+        int buttonWidth = 12;  // Размер кнопок 12x12
+        int buttonHeight = 12;
         int skillY = centerY + 20;
 
         this.buttonList.clear();
@@ -46,8 +46,14 @@ public class SkillBookGui extends GuiScreen {
         for (int i = 0; i < SKILLS_PER_PAGE; i++) {
             int skillIndex = currentPage * SKILLS_PER_PAGE + i;
             if (skillIndex < skills.size()) {
-                this.buttonList.add(new GuiButton(skillIndex * 2, centerX + BUTTON_PLUS_OFFSET_X, skillY + 5, buttonWidth, buttonHeight, "+"));
-                this.buttonList.add(new GuiButton(skillIndex * 2 + 1, centerX + BUTTON_MINUS_OFFSET_X, skillY + 5, buttonWidth, buttonHeight, "-"));
+                Skill skill = skills.get(skillIndex);
+
+                // Добавляем кнопку "+"
+                this.buttonList.add(new SkillButton(skillIndex * 2, centerX + BUTTON_PLUS_OFFSET_X, skillY + 5, buttonWidth, buttonHeight, skill, true));
+
+                // Добавляем кнопку "-"
+                this.buttonList.add(new SkillButton(skillIndex * 2 + 1, centerX + BUTTON_MINUS_OFFSET_X, skillY + 5, buttonWidth, buttonHeight, skill, false));
+
                 skillY += SKILL_SPACING;
             }
         }
@@ -55,6 +61,7 @@ public class SkillBookGui extends GuiScreen {
         this.buttonList.add(new PageButton(1000, centerX + 38, centerY + BOOK_HEIGHT - 24, true));
         this.buttonList.add(new PageButton(1001, centerX + BOOK_WIDTH - 58, centerY + BOOK_HEIGHT - 24, false));
     }
+
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
@@ -128,41 +135,105 @@ public class SkillBookGui extends GuiScreen {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        if (button.id == 1000) {
-            if (currentPage > 0) {
-                currentPage--;
-                initGui();
+        if (button instanceof PageButton) {
+            if (button.id == 1000) {  // Кнопка назад
+                if (currentPage > 0) {
+                    currentPage--;  // Перелистываем назад
+                    initGui();  // Переинициализируем GUI
+                }
+            } else if (button.id == 1001) {  // Кнопка вперед
+                if ((currentPage + 1) * SKILLS_PER_PAGE < skills.size()) {
+                    currentPage++;  // Перелистываем вперед
+                    initGui();  // Переинициализируем GUI
+                }
             }
-        } else if (button.id == 1001) {
-            if ((currentPage + 1) * SKILLS_PER_PAGE < skills.size()) {
-                currentPage++;
-                initGui();
-            }
-        } else {
+        } else if (button instanceof SkillButton) {
+            SkillButton skillButton = (SkillButton) button;
             int skillIndex = button.id / 2;
             Skill skill = skills.get(skillIndex);
-            if (button.displayString.equals("+")) {
-                ActiveSkillsManager.addSkill(skill);
-            } else if (button.displayString.equals("-")) {
-                ActiveSkillsManager.removeSkill(skill);
+
+            if (skillButton.isPlusButton) {
+                if (!ActiveSkillsManager.hasSkill(skill)) {
+                    ActiveSkillsManager.addSkill(skill);
+                }
+            } else {
+                if (ActiveSkillsManager.hasSkill(skill)) {
+                    ActiveSkillsManager.removeSkill(skill);
+                }
             }
+            // Обновляем интерфейс
+            initGui();
         }
     }
+
+
 
     @Override
     public boolean doesGuiPauseGame() {
         return false;
     }
 
+    private class SkillButton extends GuiButton {
+        private final Skill skill;
+        private final boolean isPlusButton;
+
+        public SkillButton(int buttonId, int x, int y, int width, int height, Skill skill, boolean isPlusButton) {
+            super(buttonId, x, y, width, height, "");
+            this.skill = skill;
+            this.isPlusButton = isPlusButton;
+        }
+
+        @Override
+        public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+            if (this.visible) {
+                mc.getTextureManager().bindTexture(BUTTONS_TEXTURE);
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
+                boolean isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+                boolean isActive = ActiveSkillsManager.hasSkill(this.skill);
+
+                int textureX, textureY;
+
+                if (this.isPlusButton) {
+                    // Кнопка "+"
+                    if (isActive) {
+                        textureX = 44;  // Нажатая кнопка +
+                    } else {
+                        textureX = isHovered ? 44 : 31;  // Текстура в зависимости от наведения
+                    }
+                    textureY = 0;
+                } else {
+                    // Кнопка "-"
+                    if (!isActive) {
+                        textureX = 44;  // Нажатая кнопка -
+                    } else {
+                        textureX = isHovered ? 44 : 31;  // Текстура в зависимости от наведения
+                    }
+                    textureY = 13;
+                }
+
+                // Размеры вырезки на текстуре 12x12
+                int width = 12;
+                int height = 12;
+
+                // Метод для отрисовки кнопки с использованием текстуры
+                drawScaledCustomSizeModalRect(this.x, this.y, textureX, textureY, width, height, this.width, this.height, 56, 25);
+
+                // Деактивация кнопок в зависимости от состояния
+                this.enabled = this.isPlusButton ? !isActive : isActive;
+            }
+        }
+    }
+
     private class PageButton extends GuiButton {
         private final boolean isLeft;
 
         public PageButton(int buttonId, int x, int y, boolean isLeft) {
-            super(buttonId, x, y, 20, 20, "");
+            super(buttonId, x, y, 10, 10, "");  // Устанавливаем визуальный размер кнопки 10x10
             this.isLeft = isLeft;
 
             // Устанавливаем смещение сразу при создании кнопки
-            int shiftRight = this.isLeft ? 90 : 20;
+            int shiftRight = this.isLeft ? 91 : 22;
             this.x += shiftRight; // Смещаем область активации кнопки вправо
             this.y -= 8; // Смещаем область активации кнопки вверх
         }
@@ -185,17 +256,19 @@ public class SkillBookGui extends GuiScreen {
                     textureY = 25;                  // Координаты в текстуре по оси Y
                 }
 
-                int width = 12;  // Ширина вырезки на текстуре
-                int height = 12; // Высота вырезки на текстуре
-                int buttonSizeReduce = 10; // уменьшение отображаемой кнопки
+                int textureWidth = 12;  // Ширина вырезки на текстуре
+                int textureHeight = 12; // Высота вырезки на текстуре
+                int displayWidth = 10;  // Ширина отображаемой кнопки
+                int displayHeight = 10; // Высота отображаемой кнопки
 
-                // Метод для отрисовки вырезанной области текстуры с учётом её полного размера (56x25)
-                drawScaledCustomSizeModalRect(this.x, this.y, textureX, textureY, width, height,
-                        this.width - buttonSizeReduce, this.height - buttonSizeReduce,
-                        56, 25); // общий размер файла текстуры
+                // Метод для отрисовки вырезанной области текстуры (12x12) в уменьшенном размере (10x10)
+                drawScaledCustomSizeModalRect(this.x, this.y, textureX, textureY, textureWidth, textureHeight,
+                        displayWidth, displayHeight, 56, 25);
             }
         }
     }
+
+
 
 
 }

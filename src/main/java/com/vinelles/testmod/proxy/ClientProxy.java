@@ -10,6 +10,7 @@ import com.vinelles.testmod.entities.healing.EntityHealingMagic;
 import com.vinelles.testmod.entities.healing.EntityHealingZone;
 import com.vinelles.testmod.entities.render.RenderRoots;
 
+import com.vinelles.testmod.handlers.HudEventHandler;
 import com.vinelles.testmod.handlers.OpenGuiEventHandler;
 import com.vinelles.testmod.hud.AbilityHUD;
 import com.vinelles.testmod.init.BlocksRegister;
@@ -89,6 +90,9 @@ public class ClientProxy extends CommonProxy
         MinecraftForge.EVENT_BUS.register(new CustomMainMenu());
         MinecraftForge.EVENT_BUS.register(new CastBarRenderer());
         MinecraftForge.EVENT_BUS.register(new AbilityHUD());
+
+
+        MinecraftForge.EVENT_BUS.register(new HudEventHandler());
         //MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 
     }

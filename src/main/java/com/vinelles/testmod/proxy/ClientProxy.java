@@ -86,7 +86,7 @@ public class ClientProxy extends CommonProxy
         MinecraftForge.EVENT_BUS.register(new CastBarRenderer());
         MinecraftForge.EVENT_BUS.register(new AbilityHUD());
         MinecraftForge.EVENT_BUS.register(new HudEventHandler());
-        MinecraftForge.EVENT_BUS.register(new MicroMenuHandler());
+        //MinecraftForge.EVENT_BUS.register(new MicroMenuHandler());
 
 
         //MinecraftForge.EVENT_BUS.register(new ClientEventHandler());

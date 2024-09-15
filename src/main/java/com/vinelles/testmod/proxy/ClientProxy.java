@@ -11,6 +11,7 @@ import com.vinelles.testmod.entities.healing.EntityHealingZone;
 import com.vinelles.testmod.entities.render.RenderRoots;
 
 import com.vinelles.testmod.handlers.HudEventHandler;
+import com.vinelles.testmod.handlers.MicroMenuHandler;
 import com.vinelles.testmod.handlers.OpenGuiEventHandler;
 import com.vinelles.testmod.hud.AbilityHUD;
 import com.vinelles.testmod.init.BlocksRegister;
@@ -20,23 +21,16 @@ import com.vinelles.testmod.layers.LayersRegister;
 import com.vinelles.testmod.overlay.CastBarRenderer;
 import com.vinelles.testmod.overlay.CustomMainMenu;
 import com.vinelles.testmod.overlay.CustomMainMenuRenderer;
-import com.vinelles.testmod.overlay.MainGameOverlay;
 import com.vinelles.testmod.render.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import com.vinelles.testmod.entities.EntityTotem;
 import com.vinelles.testmod.entities.render.RenderTotem;
 
 
@@ -73,6 +67,7 @@ public class ClientProxy extends CommonProxy
         KeybindsRegister.register();
         KeyHandler.register();
 
+
         //registerParticles();
     }
 
@@ -85,14 +80,15 @@ public class ClientProxy extends CommonProxy
     @Override
     public void registerRenderers() {
         MinecraftForge.EVENT_BUS.register(new OpenGuiEventHandler());
-        MinecraftForge.EVENT_BUS.register(new MainGameOverlay(Minecraft.getMinecraft()));
+        //MinecraftForge.EVENT_BUS.register(new MainGameOverlay(Minecraft.getMinecraft()));
         MinecraftForge.EVENT_BUS.register(new CustomMainMenuRenderer());
         MinecraftForge.EVENT_BUS.register(new CustomMainMenu());
         MinecraftForge.EVENT_BUS.register(new CastBarRenderer());
         MinecraftForge.EVENT_BUS.register(new AbilityHUD());
-
-
         MinecraftForge.EVENT_BUS.register(new HudEventHandler());
+        MinecraftForge.EVENT_BUS.register(new MicroMenuHandler());
+
+
         //MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
 
     }
